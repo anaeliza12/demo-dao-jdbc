@@ -1,6 +1,7 @@
 package application;
 
 import java.util.Date;
+import java.util.Scanner;
 
 import model.entities.Department;
 import model.entities.Seller;
@@ -13,6 +14,8 @@ public class Program {
 		Seller s = new Seller(1, "Ana ", "anaeliza@gmail.com", new Date(), 3000.0);
 		
 		System.out.println(s);
-	}
 
+		  
+		
+}
 }
