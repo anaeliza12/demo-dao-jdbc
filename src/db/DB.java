@@ -47,7 +47,7 @@ public class DB {
 		}
 	}
 
-	public static void closeStatment(Statement st) {
+	public static void closeStatement(Statement st) {
 		try {
 			st.close();
 		} catch (SQLException e) {
