@@ -42,5 +42,8 @@ public class Program {
 		System.out.println("\n ==== TEST 5: seller update ====");
 		sellerDao.update(new Seller(23, "Flavia Calina Da Silva", "flavia@gmail.com", new Date(), 4900.0, dep));
 
+		System.out.println("\n ==== TEST 6: seller delete ====");
+		sellerDao.deleteById(4);
+		System.out.println("Seller deleted!");
 	}
 }
