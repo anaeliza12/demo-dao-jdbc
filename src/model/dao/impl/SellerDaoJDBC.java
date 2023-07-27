@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,40 @@ public class SellerDaoJDBC implements SellerDao {
 
 	@Override
 	public void insert(Seller obj) {
-		// TODO Auto-generated method stub
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		PreparedStatement st = null;
+		try {
+
+			st = conn.prepareStatement(
+					"INSERT INTO SELLER (Name, Email, BirthDate, BaseSalary, DepartmentId)" + " VALUES (?,?,?,?,?) ",
+					st.RETURN_GENERATED_KEYS);
+
+			st.setString(1, obj.getName());
+			st.setString(2, obj.getEmail());
+			st.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+			st.setDouble(4, obj.getBaseSalary());
+			st.setInt(5, obj.getDepartment().getId());
+
+			int row = st.executeUpdate();
+			
+			if (row > 0) { 
+				ResultSet rs = st.getGeneratedKeys();
+			
+				if (rs.next()) {
+					int id = rs.getInt(1);
+					obj.setId(id);
+				}
+				DB.closeResultSet(rs);
+
+			}else 
+				throw new DbException("Ubnexpected error! No rows affected!" );
+
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+
+		}
 
 	}
 
@@ -95,11 +129,9 @@ public class SellerDaoJDBC implements SellerDao {
 		try {
 			st = conn.prepareStatement(
 					"SELECT s.*, d.Name as DepName FROM SELLER S INNER JOIN DEPARTMENT D ON (S.DepartmentId = D.Id)"
-					+ " ORDER BY s.Id");
+							+ " ORDER BY s.Id");
 			rs = st.executeQuery();
 
-			
-			
 			List<Seller> list = new ArrayList<>();
 
 			Map<Integer, Department> map = new HashMap<>();
@@ -115,15 +147,15 @@ public class SellerDaoJDBC implements SellerDao {
 				list.add(seller);
 
 			}
-			
+
 			return list;
 		} catch (SQLException e) {
 			throw new DbException(e.getMessage());
-		}finally {
+		} finally {
 			DB.closeStatement(st);
 			DB.closeResultSet(rs);
 		}
-		
+
 	}
 
 	@Override
